@@ -13,6 +13,7 @@ public class ScannedResult {
     private String resultText;
     private Long inDate;
     private String format;
+    private boolean delFlag;
     public Integer getId() {
         return id;
     }
@@ -43,6 +44,14 @@ public class ScannedResult {
 
     public void setFormat(String format) {
         this.format = format;
+    }
+
+    public boolean isDelFlag() {
+        return delFlag;
+    }
+
+    public void setDelFlag(boolean delFlag) {
+        this.delFlag = delFlag;
     }
 
     public ContentValues toInsertValues()

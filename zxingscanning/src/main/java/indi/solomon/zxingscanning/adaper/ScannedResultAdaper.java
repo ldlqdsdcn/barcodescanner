@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import java.text.DateFormat;
@@ -32,6 +34,17 @@ public class ScannedResultAdaper extends BaseAdapter {
     public void updateList(List<ScannedResult> list) {
         this.list = list;
     }
+    public void updateDelFlag(boolean delFlag)
+    {
+        for(ScannedResult scannedResult:list)
+        {
+            scannedResult.setDelFlag(delFlag);
+        }
+    }
+    public List<ScannedResult> getListModel()
+    {
+        return this.list;
+    }
 
     @Override
     public int getCount() {
@@ -52,12 +65,20 @@ public class ScannedResultAdaper extends BaseAdapter {
     public View getView(int i, View view, ViewGroup viewGroup) {
         View item = mInflater.inflate(R.layout.adaper_scanned_result, null);
         TextView inDate = (TextView) item.findViewById(R.id.in_date);
-        ScannedResult scannedResult = list.get(i);
+        final ScannedResult scannedResult = list.get(i);
         inDate.setText(yyyyMMddHHmmss.format(new Date(scannedResult.getInDate())));
         TextView scannedText = (TextView) item.findViewById(R.id.scanned_text);
         scannedText.setText(scannedResult.getResultText());
         TextView format = (TextView) item.findViewById(R.id.format);
         format.setText(scannedResult.getFormat());
+        CheckBox checkBox=(CheckBox) item.findViewById(R.id.checkBox);
+        checkBox.setChecked(scannedResult.isDelFlag());
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                scannedResult.setDelFlag(isChecked);
+            }
+        });
         return item;
     }
 }

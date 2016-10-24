@@ -21,4 +21,23 @@
         android:id="@+id/btn_scanning"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
+
+    <Button
+        android:text="删除"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/list_item"
+        android:layout_toRightOf="@+id/btn_scanning"
+        android:layout_toEndOf="@+id/btn_scanning"
+        android:id="@+id/but_del" />
+
+    <CheckBox
+        android:text="全选"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/checkAll"
+        android:layout_alignBaseline="@+id/btn_scanning"
+        android:layout_alignBottom="@+id/btn_scanning"
+        android:layout_toLeftOf="@+id/btn_scanning"
+        android:layout_toStartOf="@+id/btn_scanning" />
 </RelativeLayout>

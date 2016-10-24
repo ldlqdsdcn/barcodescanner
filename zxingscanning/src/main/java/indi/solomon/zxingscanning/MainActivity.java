@@ -1,15 +1,19 @@
 package indi.solomon.zxingscanning;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.ListViewAutoScrollHelper;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 
 import java.util.List;
@@ -24,9 +28,9 @@ public class MainActivity extends AppCompatActivity {
     private ScannedResultDao scannedResultDao;
     private ListView listItem;
     private ScannedResultAdaper scannedResultAdaper = null;
-
+    private CheckBox checkAll;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         listItem = (ListView) findViewById(R.id.list_item);
@@ -34,6 +38,40 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 launchActivity(ScanningActivity.class);
+            }
+        });
+        checkAll=(CheckBox) findViewById(R.id.checkAll);
+        checkAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                scannedResultAdaper.updateDelFlag(isChecked);
+                scannedResultAdaper.notifyDataSetChanged();
+
+            }
+        });
+        findViewById(R.id.but_del).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(MainActivity.this)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setTitle("确认删除")
+                        .setMessage("确认删除选择记录吗?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                List<ScannedResult> list= scannedResultAdaper.getListModel();
+                                for(ScannedResult scannedResult:list)
+                                {
+                                    if(scannedResult.isDelFlag())
+                                        scannedResultDao.deleteScannedResult(scannedResult.getId());
+                                }
+                                init();
+                            }})
+                        .setNegativeButton("No", null)
+                        .show();
+
+
             }
         });
         scannedResultDao = new ScannedResultDao(this);
@@ -65,8 +103,9 @@ public class MainActivity extends AppCompatActivity {
             scannedResultAdaper.updateList(scannedResultList);
             scannedResultAdaper.notifyDataSetInvalidated();
         } else {
-            ScannedResultAdaper scannedResultAdaper = new ScannedResultAdaper(this, scannedResultList);
+             scannedResultAdaper = new ScannedResultAdaper(this, scannedResultList);
             this.listItem.setAdapter(scannedResultAdaper);
+
         }
 
     }
